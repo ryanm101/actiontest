@@ -23,14 +23,17 @@ jobs:
       - name: Get previous tag
         id: previous-tag
         run: |
-          CURRENT_TAG=${{ github.ref_name }}
+          CURRENT_SHA=$(git rev-parse HEAD)
+          CURRENT_TAG=$(git tag --points-at "$CURRENT_SHA" | tail -n 1) # tail -n 1 in case of multiple tags.
+          echo "current_tag=$CURRENT_TAG" >> $GITHUB_OUTPUT
+          #CURRENT_TAG=${{ github.ref_name }}
           # Get the previous tag (sorted by version)
           PREVIOUS_TAG=$(git tag --sort=-v:refname | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | awk 'NR==1 {found=0} $0 == "'$CURRENT_TAG'" {found=1} found && $0 != "'$CURRENT_TAG'" {print; exit}')
           echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
 
       - name: Get merged PRs and linked issues
         id: get-items
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         env:
           CURRENT_TAG: ${{ github.ref_name }}
           PREVIOUS_TAG: ${{ steps.previous-tag.outputs.previous_tag }}
@@ -39,8 +42,10 @@ jobs:
           script: |
             const { owner, repo } = context.repo;
             const labelName = process.env.LABEL_NAME;
-            const currentTag = process.env.CURRENT_TAG;
-            const previousTag = process.env.PREVIOUS_TAG;
+            #const currentTag = process.env.CURRENT_TAG;
+            #const previousTag = process.env.PREVIOUS_TAG;
+            const currentTag = "0.0.1"
+            const previousTag = "0.0.0"
 
             // Create or get the label
             try {
