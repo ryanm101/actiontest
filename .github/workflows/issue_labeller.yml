@@ -1,8 +1,11 @@
 name: Label Release Items
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+    inputs:
+      release_name:
+        description: 'The release name (tag) to release'
+        required: true
 
 jobs:
   label-release-items:
