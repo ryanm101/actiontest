@@ -31,7 +31,7 @@ jobs:
         env:
           CURRENT_TAG: ${{ github.ref_name }}
           PREVIOUS_TAG: ${{ steps.previous-tag.outputs.previous_tag }}
-          LABEL_NAME: "Released in ${{ github.ref_name }}"
+          LABEL_NAME: "release/${{ github.ref_name }}"
         with:
           script: |
             const { owner, repo } = context.repo;
